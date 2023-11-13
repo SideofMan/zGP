@@ -1,4 +1,4 @@
-Please note that 
+## R code for zero censored Gaussian process emulation
 
 Function descriptions:
 
