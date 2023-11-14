@@ -14,38 +14,38 @@ s = Sys.time()
 set.seed(6)
 # toy function #
 
-# xdsave = readMat('BO_toy_design.mat')$xdsave # you could pick these random -- typically that happens with Latin Hypercube sampling, which you can basically thinking of as uniform sampling
-# # Toy function adapted from Bastos O'Hagan 2012
-# BO_toy = function(x,y) (1-exp(-1/(2*y)))*(2300*x^3+199*x^2+2092*x+60)/(100*x^3+500*x^2+4*x+20)-6
-# 
-# y = matrix(BO_toy(xdsave[,1], xdsave[,2]))
-# xd = xdsave
-# ytrue = y
+xdsave = readMat('BO_toy_design.mat')$xdsave # you could pick these random -- typically that happens with Latin Hypercube sampling, which you can basically thinking of as uniform sampling
+# Toy function adapted from Bastos O'Hagan 2012
+BO_toy = function(x,y) (1-exp(-1/(2*y)))*(2300*x^3+199*x^2+2092*x+60)/(100*x^3+500*x^2+4*x+20)-6
+
+y = matrix(BO_toy(xdsave[,1], xdsave[,2]))
+xd = xdsave
+ytrue = y
 
 ################
 
 # Aluto data # remember to change the locs down low as well
 
-Aluto_data = readMat('Aluto_data_PoIs19_22.mat')
-
-xdsave = Aluto_data$xdtest[[1]][[1]]
-y = log10(Aluto_data$ytest[[1]][[1]]+1)
-# xdsave = Aluto_data$xdtest[[2]][[1]]
-# y = log10(Aluto_data$ytest[[2]][[1]]+1)
-
-maxx = matrix(apply(xdsave, MARGIN = 2, max), nrow = 1)
-minx = matrix(apply(xdsave, MARGIN = 2, min), nrow = 1)
-diff = maxx - minx
-
-N = dim(xdsave)[1]
-Ndim = dim(xdsave)[2]
-
-xd = matrix(0, nrow = N, ncol = Ndim)
-for (k in 1:Ndim){
-  xd[,k] = (xdsave[,k]-minx[1,k])/diff[1,k]
-}
-
-ytrue = y
+# Aluto_data = readMat('Aluto_data_PoIs19_22.mat')
+# 
+# xdsave = Aluto_data$xdtest[[1]][[1]]
+# y = log10(Aluto_data$ytest[[1]][[1]]+1)
+# # xdsave = Aluto_data$xdtest[[2]][[1]]
+# # y = log10(Aluto_data$ytest[[2]][[1]]+1)
+# 
+# maxx = matrix(apply(xdsave, MARGIN = 2, max), nrow = 1)
+# minx = matrix(apply(xdsave, MARGIN = 2, min), nrow = 1)
+# diff = maxx - minx
+# 
+# N = dim(xdsave)[1]
+# Ndim = dim(xdsave)[2]
+# 
+# xd = matrix(0, nrow = N, ncol = Ndim)
+# for (k in 1:Ndim){
+#   xd[,k] = (xdsave[,k]-minx[1,k])/diff[1,k]
+# }
+# 
+# ytrue = y
 
 ##################
 
@@ -62,7 +62,7 @@ Ngibbs = 2000
 # This is where we start the negative samples
 ##############################################
 
-source("./RLW_init_impute_optimized_clean_fast.R")
+source("./RLW_init_impute.R")
 source("./corr_matrix.R")
 
 output = RLW_init_impute(xd, ystart) # This does "batch sampling" to get an initially set of negative sampleings
@@ -107,10 +107,10 @@ erfinv = output[[6]]
 # Imputing negative responses to design points that have zero outputs via zGP
 ##############################################################################
 
-source("./zGP_gibbs_nrz_optmean_potential_updates_optimized_clean.R")
+source("./zGP_gibbs_nrz_optmean.R")
 
-# locs = matrix(0, nrow = 1, ncol = 2) # specific for another problem, leave as zeros for now
-locs = Aluto_data$locstest[[1]][[1]]
+locs = matrix(0, nrow = 1, ncol = 2) # specific for another problem, leave as zeros for now
+# locs = Aluto_data$locstest[[1]][[1]]
 output = zGP_gibbs_nrz_optmean(xall,yall,Ngibbs,locs, Ninclude); # This takes the initial set of negative samples and refines them with Gibbs sampling
                                                                   # output{1} is set of Gibbs samplings for all y
                                                                   # output{2} are (square of) range parameter
