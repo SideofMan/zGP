@@ -1,6 +1,6 @@
 ## R code for zero censored Gaussian process emulation
 
-Please note that the following packages are required in R for this code to run: (testing)  
+Please note that the following packages are required in R for this code to run:  
 R.matlab  
 RobustGaSP  
 plotly  
