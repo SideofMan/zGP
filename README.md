@@ -1,5 +1,8 @@
 ## R code for zero censored Gaussian process emulation
 
+This algorithm accompanies the paper _The Zero Problem: Gaussian Process Emulators for Range-Constrained Computer Models_ (Spiller et. al 2023)
+https://doi.org/10.1137/21M1467420
+
 Please note that the following packages are required in R for this code to run:  
 R.matlab  
 RobustGaSP  
